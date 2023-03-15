@@ -1,0 +1,645 @@
+html {
+    height: 100%;
+    font-size: 16px;
+  }
+  body {
+    background: black;
+    padding: 3rem 3rem;
+    justify-content: space-between;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 1fr;
+    height: calc(100% - 6rem);
+  }
+  
+  .body.hover:hover canvas {
+    opacity: 0.5;
+  }
+  .body.hover:hover canvas:hover {
+    opacity: 1;
+  }
+  canvas {
+    transition: all 300ms ease-in-out;
+  }
+  
+  .header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4rem;
+  }
+  
+  .header,
+  .footer {
+    height: 3rem;
+  }
+  
+  button {
+    background: none;
+    color: white;
+    border: none;
+    font-size: 1rem;
+  }
+  
+  .footer {
+    margin-top: 2rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .icon-btn {
+    opacity: 0.5;
+    padding: 0;
+    height: 2rem;
+    width: 2rem;
+    margin: 0 0.25rem;
+  }
+  
+  .beta {
+    border: 1px solid white;
+    color: white;
+    font-family: "s";
+    padding: 0 6px;
+    font-size: 10px;
+    border-radius: 5px;
+    opacity: 0.5;
+    margin-top: 1px;
+    margin-left: 12px;
+    height: 20px;
+    line-height: 20px;
+    font-weight: 600;
+    letter-spacing: 1;
+    display: inline-block;
+  }
+  
+  #welcome > div:first-child {
+    display: flex;
+    align-items: center;
+  }
+  
+  .icon-btn:hover {
+    opacity: 1;
+  }
+  
+  .export-btn {
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 0.5rem 2rem;
+    margin-left: 1.5rem;
+    cursor: pointer;
+  }
+  
+  .footer input {
+    height: 3rem;
+    width: 3rem;
+    background: none;
+    margin: 0 0.25rem;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    padding: 0;
+    cursor: pointer;
+    opacity: 0.5;
+  }
+  
+  .footer input:hover {
+    opacity: 1;
+  }
+  
+  
+  .draggable {
+    width: 6px;
+    height: 80px;
+    background: white;
+    opacity: 0.25;
+    border-radius: 6px;
+    padding: 0;
+    display: block;
+    margin: 0.75rem;
+  }
+  .draggable:hover {
+    opacity: 0.5;
+  }
+  .body > div:nth-child(2) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #left,
+  #right {
+    width: calc(50% - 15px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  #left {
+    margin-right: 1rem;
+    justify-content: flex-end;
+  }
+  
+  #right {
+    margin-left: 1rem;
+    float: left;
+    justify-content: flex-start;
+  }
+  
+  canvs {
+    display: block;
+    height: auto;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
+  
+  
+  .hidden {
+    display: none;
+    width: 0;
+  }
+  
+  dialog {
+    background: #131313;
+    color: white;
+    padding: 3rem;
+    border-radius: 0.5rem;
+    margin: 0;
+    border: 0;
+    font-size: 1rem;
+    max-width: 40rem;
+    flex-direction: column;
+    line-height: 1.25rem;
+    margin: auto;
+    color: #6f6f6fbf;
+    z-index: 1;
+  }
+  
+  dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.75);
+  }
+  
+  a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  dialog > div {
+  }
+  
+  dialog h1 {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: white;
+  }
+  
+  dialog .inner {
+  }
+  
+  strong {
+    opacity: 1;
+    display: contents;
+    color: #9f9f9f;
+  }
+  
+  dialog a {
+    display: contents;
+    color: #9f9f9f;
+  }
+  
+  dialog button {
+    font-size: 1rem;
+    margin-left: -0.5rem;
+    opacity: 0.5;
+    display: inline-block;
+  }
+  
+  button:hover {
+    opacity: 1;
+  }
+  
+  .gallery {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: black;
+    padding: 8rem;
+    z-index: 11;
+    color: white;
+    transform: translateY(100%);
+    font-family: "s";
+    flex-direction: column;
+    overflow-y: auto;
+    transition: all 300ms cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+  
+  .gallery h1 {
+    font-size: 4rem;
+    margin-bottom: 2rem;
+    color: white;
+  }
+  
+  .gallery p {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #9f9f9f;
+    padding-bottom: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .gallery > button {
+    opacity: 0.25;
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin: 0;
+    text-align: left;
+    padding: 0;
+    margin-bottom: 1.5rem;
+  }
+  
+  .gallery.open {
+    transform: translateY(0);
+  }
+  
+  .gallery__wrapper {
+    display: grid;
+    flex: 1;
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    grid-gap: 4rem;
+  }
+  
+  .gallery__wrapper a img {
+    top: 0;
+    left: 0;
+    width: 100%;
+    position: absolute;
+  }
+  .gallery__wrapper a {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    padding-top: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+  .tutorial {
+    font-family: "s";
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 3rem 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    color: white;
+    grid-gap: 2rem;
+    opacity: 0;
+    visibility: hidden;
+    background: rgba(0, 0, 0, 0.75);
+    transition: all 300ms ease-out;
+  }
+  
+  .tutorial.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .tutorial h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: white;
+  }
+  
+  .tutorial p {
+    font-weight: 300;
+  }
+  
+  .tutorial div {
+    opacity: 0;
+    transition: all 300ms ease-out;
+    position: relative;
+    z-index: 10;
+  }
+  
+  .tutorial button {
+    border: 1px solid white;
+    padding: 6px 12px;
+    margin-top: 1rem;
+  }
+  
+  a {
+    cursor: pointer;
+  }
+  
+  .gallery p a {
+    border: 1px solid white;
+    padding: 0 12px;
+    height: 32px;
+    line-height: 32px;
+    font-size: 1rem;
+  }
+  .btn-group {
+    display: flex;
+    font-family: "s";
+  }
+  
+  .btn-group input {
+    transform: scale(0.9);
+    transition: all 200ms cubic-bezier(0.075, 0.82, 0.165, 1);
+  }
+  
+  .btn-group input:hover {
+    transform: scale(1);
+  }
+  
+  #output{
+    display: block;
+  }
+  .row{
+    display: flex;
+  }
+  
+  #welcome {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    color: white;
+    font-family: "s";
+    background: rgba(0, 0, 0, 1);
+    padding: 6rem;
+    opacity: 0;
+    transition: opacity 300ms ease-out;
+    z-index: -1;
+  }
+  
+  #welcome h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  #welcome p {
+    font-weight: 300;
+  }
+  #welcome button {
+    border: 1px solid white;
+    padding: 8px 16px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  #welcome strong {
+    color: #ffd0c5;
+    opacity: 1;
+    font-weight: 500;
+  }
+  
+  @keyframes animate {
+    from {
+      transform: translateY(0%);
+      transform-origin: bottom;
+    }
+  
+    to {
+      transform: translateY(calc(-100% - 1vw));
+      transform-origin: top;
+    }
+  }
+  
+  .showcase {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 1vw;
+    margin-top: 0;
+    padding-left: 6rem;
+    padding-right: 6rem;
+    padding-bottom: 0;
+    object-fit: cover;
+    position: fixed;
+    right: 0;
+    top: 0;
+    left: 0;
+  }
+  
+  #welcome.visible {
+    opacity: 1;
+    visibility: visible;
+    z-index: 1;
+  }
+  
+  #welcome > div:first-child {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+  
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes scaleIn {
+    from {
+      transform: scale(0.75);
+    }
+  
+    to {
+      opacity: scale(1);
+    }
+  }
+  
+  .mobile {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: black;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    z-index: 100;
+    font-family: "s";
+    color: white;
+    padding: 1rem;
+    display: none;
+    justify-content: center;
+  }
+  
+  .mobile.visible {
+    display: flex;
+  }
+  
+  .mobile a {
+    font-size: 2rem;
+    margin-top: 1rem;
+  }
+  
+  .mobile img {
+    height: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .mobile h1 {
+    font-size: 2rem;
+    text-align: center;
+  }
+  
+  .showcase > div div {
+    display: grid;
+    grid-gap: 1vw;
+    margin-top: 1vw;
+    animation: animate 14s linear infinite;
+    grid-template-rows: repeat(4, 0.51fr);
+  }
+  
+  .showcase > div:nth-child(2) {
+    position: relative;
+    top: 14vw;
+  }
+  
+  .showcase.safari > div div img {
+    height: auto;
+    padding: 0;
+  }
+  
+  .showcase img {
+    animation: fadeIn 1s linear forwards,
+      scaleIn 1.25s cubic-bezier(0.075, 0.82, 0.165, 1);
+    opacity: 0;
+  }
+  
+  .showcase img:nth-child(1) {
+  }
+  
+  .showcase img:nth-child(2) {
+    animation-delay: 100ms;
+  }
+  
+  .showcase img:nth-child(3) {
+    animation-delay: 200ms;
+  }
+  
+  .showcase img:nth-child(4) {
+    animation-delay: 300ms;
+  }
+  
+  .showcase img:nth-child(5) {
+    animation-delay: 400ms;
+  }
+  
+  .settings {
+    background: #1f1f1f;
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-top: 2rem;
+  }
+  select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none; /* Remove default arrow */
+    background-image: url(...); /* Add custom arrow */
+    border: none;
+    padding: 0.5rem 1rem;
+    background: #3e3e3e;
+    color: white;
+  }
+  
+  select:hover {
+    background: #585858;
+  }
+  
+  .settings h5 {
+    color: white;
+    font-size: 1.125rem;
+  }
+  
+  .settings div {
+    display: grid;
+    color: #f1f1f1;
+    grid-template-columns: 1fr 1fr;
+    padding-top: 1rem;
+    align-items: center;
+  }
+  
+  select {
+    width: 140px;
+  }
+  
+  #welcome div:first-child {
+    position: relative;
+    color: white;
+    z-index: 10;
+  }
+  
+  #welcome h1,
+  #welcome p,
+  #welcome button,
+  #welcome strong {
+    animation: fadeIn 1s linear forwards;
+  }
+  
+  #welcome > div:first-child::after {
+    position: absolute;
+    top: 8rem;
+    content: "";
+    bottom: -8rem;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
+  }
+  
+  #welcome > div:first-child::before {
+    position: absolute;
+    top: -8rem;
+    left: 0;
+    right: 0;
+    background: black;
+    content: "";
+    z-index: -1;
+    height: 16rem;
+  }
+  
+  .showcase img {
+    padding-bottom: 100%;
+    height: 100%;
+    width: 100%;
+  }
+  
+  .tutorial button,
+  #welcome button {
+    transition: all 200ms cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+  
+  .tutorial button:hover,
+  #welcome button:hover {
+    background: white;
+    color: black;
+  }
+  
+  .logo-sm {
+    position: absolute;
+    right: 0;
+    height: 2rem;
+    top: 0;
+  }
+  
