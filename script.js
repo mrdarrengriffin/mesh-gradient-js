@@ -656,6 +656,8 @@ Canvas.prototype.draw = function () {
 		gl.disableVertexAttribArray(texcoord_attrib);
 
 		gl.useProgram(null);
+	} else {
+		console.log('not enough points')
 	}
 
 	if (this.warp.npoints() > 0 && !this.isClone) {
@@ -809,8 +811,8 @@ function updateUrl(d) {
 }
 function keypressFunction(e) {
 	var evtobj = window.event ? event : e;
-
-	if (evtobj.keyCode == 90 && evtobj.metaKey && evtobj.shiftKey) {
+	console.log(evtobj.keyCode);
+	if (evtobj.keyCode == 219) {
 		if (redoData.length > 0) {
 			const undo = {
 				s: warps.src.map(item => [
@@ -824,6 +826,7 @@ function keypressFunction(e) {
 				p: warps.npoints
 			};
 
+			console.log(undo)
 			const data = redoData.shift();
 
 			previousData.unshift(undo);
@@ -832,7 +835,7 @@ function keypressFunction(e) {
 			updateUrl(data);
 			redraw();
 		}
-	} else if (evtobj.keyCode == 90 && evtobj.metaKey && !evtobj.shiftKey) {
+	} else if (evtobj.keyCode == 221) {
 		if (previousData.length > 0) {
 			const data = previousData.shift();
 			const redo = {
@@ -875,6 +878,8 @@ Canvas.prototype.mouse_move = function (event) {
 	let py = this.drag[4];
 	let qx = px + x - x0;
 	let qy = py + y - y0;
+
+	console.log(qx, qy);
 
 	this.warp.src[i] = [qx, qy];
 	meshGradient.hasUnsavedChanges = true;
@@ -996,6 +1001,7 @@ function init() {
 		"canvas3",
 		true
 	);
+
 	const addDefault = () => {
 		let pairs = [
 			[-0.9, 0.9],
@@ -1070,10 +1076,10 @@ function debounce(func, wait = 100) {
 	};
 }
 
-window.addEventListener(
-	"resize",
-	debounce(() => init(), 300)
-);
+// window.addEventListener(
+// 	"resize",
+// 	debounce(() => init(), 300)
+// );
 
 function togglePreview() {
 	document.getElementById("canvas1").classList.add("hidden");
@@ -1132,6 +1138,9 @@ class MeshGradientTimeline {
 		// Clone and store colors from hex to RGB.
 		frame.setColors(JSON.parse(JSON.stringify(colors)));
 
+		// Clone and store the number of points.
+		frame.setPointCount(JSON.parse(JSON.stringify(warps.npoints)));
+
 		// Clone and store color picker point values.
 		frame.setColorPoints(JSON.parse(JSON.stringify(src_c.warp.src)));
 
@@ -1139,8 +1148,9 @@ class MeshGradientTimeline {
 		frame.setDistortionPoints(JSON.parse(JSON.stringify(dst_c.warp.src)));
 
 		this.frames.push(frame);
+		console.log(warps.src);
 
-		this.currentFrame = this.frames.length;
+		this.currentFrame = this.frames.length - 1;
 
 		this.hasUnsavedChanges = false;
 	}
@@ -1158,8 +1168,12 @@ class MeshGradientTimeline {
 		colors = JSON.parse(JSON.stringify(frame.getColors()));
 
 		// Restore color picker point values from frame
-		src_c.warp.src = JSON.parse(JSON.stringify(frame.getColorPoints()));
-		dst_c.warp.src = JSON.parse(JSON.stringify(frame.getDistortionPoints()));
+		const src = JSON.parse(JSON.stringify(frame.getColorPoints()));
+		const dst = JSON.parse(JSON.stringify(frame.getDistortionPoints()));
+		const points = JSON.parse(JSON.stringify(frame.getPointCount()));
+
+		warps.removeAll();
+		warps.setData(src, dst, points);
 
 		this.hasUnsavedChanges = false;
 
@@ -1188,14 +1202,17 @@ class MeshGradientTimeline {
 			colors: colors,
 			srcPoints: src_c.warp.src,
 			dstPoints: dst_c.warp.src,
-			frames: []
+			frames: [],
+			currentFrame: this.currentFrame
 		};
+
 		this.frames.forEach(frame => {
 			console.log(frame);
 			stateData.frames.push({
 				colors: frame.getColors(),
 				colorPoints: frame.getColorPoints(),
-				distortionPoints: frame.getDistortionPoints()
+				distortionPoints: frame.getDistortionPoints(),
+				pointCount: frame.getPointCount()
 			});
 		});
 
@@ -1212,8 +1229,8 @@ class MeshGradientTimeline {
 
 		colors = stateData.colors;
 
-		src_c.warp.src = stateData.srcPoints;
-		dst_c.warp.src = stateData.dstPoints;
+		warps.removeAll();
+		warps.setData(stateData.srcPoints, stateData.dstPoints, stateData.pointCount);
 
 		this.frames = [];
 
@@ -1222,10 +1239,11 @@ class MeshGradientTimeline {
 			meshGradientFrame.setColors(frame.colors);
 			meshGradientFrame.setColorPoints(frame.colorPoints);
 			meshGradientFrame.setDistortionPoints(frame.distortionPoints);
+			meshGradientFrame.setPointCount(frame.pointCount);
 			this.frames.push(meshGradientFrame);
 		});
 
-		this.loadFrame(0);
+		this.loadFrame(stateData.currentFrame);
 	}
 
 	transitionToFrame(frame) {
@@ -1239,7 +1257,7 @@ class MeshGradientTimeline {
 			colors: JSON.parse(JSON.stringify(this.frames[this.currentFrame].getColors())),
 			colorPoints: JSON.parse(JSON.stringify(this.frames[this.currentFrame].getColorPoints())),
 			distortionPoints: JSON.parse(JSON.stringify(this.frames[this.currentFrame].getDistortionPoints()))
-		}			
+		}
 
 		this._transitionToState = {
 			colors: JSON.parse(JSON.stringify(this.frames[frame].getColors())),
@@ -1304,7 +1322,7 @@ class MeshGradientTimeline {
 			const pointY = easeInOutQuad(this._transitionElapsedTime, point[1], toState[1] - point[1], this.transitionDuration);
 			src_c.warp.src[pointIndex] = [pointX, pointY];
 		});
-		
+
 		// dst - points
 		this._transitionFromState.distortionPoints.forEach((point, pointIndex) => {
 			const toState = this._transitionToState.distortionPoints[pointIndex];
@@ -1329,6 +1347,7 @@ class MeshGradientFrame {
 	colorsMap = {};
 	distortionPoints = [];
 	colorPoints = [];
+	pointCount = 0;
 
 	setColors(colorsMap) {
 		this.colorsMap = colorsMap;
@@ -1336,6 +1355,14 @@ class MeshGradientFrame {
 
 	getColors() {
 		return this.colorsMap;
+	}
+
+	setPointCount(pointCount) {
+		this.pointCount = pointCount;
+	}
+
+	getPointCount() {
+		return this.pointCount;
 	}
 
 	setDistortionPoints(distortionPoints) {
