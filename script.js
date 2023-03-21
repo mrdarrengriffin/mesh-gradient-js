@@ -1670,7 +1670,7 @@ function initButtons() {
     });
 
     saveTimelineBtn.addEventListener("click", () => {
-        // TODO: Save to URL
+        meshGradient.updateURL();
     });
 
     clearTimelineBtn.addEventListener("click", () => {
