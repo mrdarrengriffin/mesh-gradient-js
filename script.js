@@ -1254,7 +1254,7 @@
 			this.maybeSaveStateChanged();
 		}
 
-    getSaveStateData(){
+		getSaveStateData() {
 			if (this.currentFrame === false) {
 				this.addFrame();
 			}
@@ -1297,6 +1297,9 @@
 			warps.removeAll();
 			warps.setData(stateData.srcPoints, stateData.dstPoints, stateData.pointCount);
 
+			editor.reset();
+
+			this.currentFrame = 0;
 			this.frames = [];
 
 			stateData.frames.forEach((frame, index) => {
@@ -1307,11 +1310,12 @@
 				meshGradientFrame.setDistortionPoints(frame.distortionPoints);
 				meshGradientFrame.setPointCount(frame.pointCount);
 				this.frames.push(meshGradientFrame);
-            editor.addFrame(meshGradientFrame)
+				editor.addFrame(meshGradientFrame)
 			});
 
 			this.loadFrame(stateData.currentFrame);
 		}
+
 		loadURLState() {
 			const urlParams = new URLSearchParams(window.location.search);
 			const stateData = JSON.parse(atob(urlParams.get('s')));
@@ -1334,8 +1338,8 @@
 				return;
 			}
 
-        // Update timeline to show transition
-        editor.setFrame(this.frames[frame]);
+			// Update timeline to show transition
+			editor.setFrame(this.frames[frame]);
 
 			// Prepare values
 			this._transitionFromState = {
@@ -1362,7 +1366,7 @@
 
 		}
 
-    clearTimeline(){
+		clearTimeline() {
 			// refresh page without any search params
 
 			const urlParams = new URLSearchParams(window.location.search);
@@ -1546,160 +1550,183 @@
 		//meshGradient.addFrame();
 	}
 
-/**
- * UI
- */
-class Editor {
-    timelineElem;
-    currentTimelineFrameElem;
+	/**
+	 * UI
+	 */
+	class Editor {
+		timelineElem;
+		currentTimelineFrameElem;
 
-    frameNavigationSpeed = 5000;
+		frameNavigationSpeed = 5000;
 
-    constructor() {
-        this.timelineElem = document.querySelector(".timeline");
-        this.initSaveStateListener();
-        this.initTransitionListener();
-    }
+		constructor() {
+			this.timelineElem = document.querySelector(".timeline");
+			this.initSaveStateListener();
+			this.initTransitionListener();
+		}
 
-    addFrame(frame) {
-        const frameElem = document.createElement("div");
-        frameElem.classList.add("frame");
-        frameElem.setAttribute('data-frame-index', frame.getPositionIndex());
+		addFrame(frame) {
+			const frameElem = document.createElement("div");
+			frameElem.classList.add("frame");
+			frameElem.setAttribute('data-frame-index', frame.getPositionIndex());
 
-        frameElem.addEventListener('click', () => {
-            this.timelineElem.classList.add('transitioning');
-            meshGradient.transitionToFrame(frame.getPositionIndex());
-            setTimeout(() => {
-                this.timelineElem.classList.remove('transitioning');
-            }, meshGradient.transitionDuration);
-        });
+			frameElem.addEventListener('click', () => {
+				this.timelineElem.classList.add('transitioning');
+				meshGradient.transitionToFrame(frame.getPositionIndex());
+				setTimeout(() => {
+					this.timelineElem.classList.remove('transitioning');
+				}, meshGradient.transitionDuration);
+			});
 
-        this.timelineElem.querySelector('.frames').appendChild(frameElem);
-    }
+			this.timelineElem.querySelector('.frames').appendChild(frameElem);
+		}
 
-    setFrame(frame) {
-        console.log(frame);
-        this.timelineElem.querySelectorAll('.frame').forEach((frameElem) => {
-            if (frameElem.getAttribute('data-frame-index') == frame.getPositionIndex()) {
-                this.currentTimelineFrameElem = frameElem;
-                frameElem.classList.add('active');
-            } else {
-                frameElem.classList.remove('active');
-            }
-        });
-    }
+		setFrame(frame) {
+			console.log(frame);
+			this.timelineElem.querySelectorAll('.frame').forEach((frameElem) => {
+				if (frameElem.getAttribute('data-frame-index') == frame.getPositionIndex()) {
+					this.currentTimelineFrameElem = frameElem;
+					frameElem.classList.add('active');
+				} else {
+					frameElem.classList.remove('active');
+				}
+			});
+		}
 
-    deleteFrame(frame) {
-        this.timelineElem.querySelectorAll('.frame').forEach((frameElem) => {
-            if (frameElem.getAttribute('data-frame-index') == frame.getPositionIndex()) {
-                frameElem.remove();
-            }
-        });
-    }
+		deleteFrame(frame) {
+			this.timelineElem.querySelectorAll('.frame').forEach((frameElem) => {
+				if (frameElem.getAttribute('data-frame-index') == frame.getPositionIndex()) {
+					frameElem.remove();
+				}
+			});
+		}
 
-    initSaveStateListener() {
-        window.addEventListener('timelineSaveStateChanged', (e) => {
-            if (e.detail.saveState) {
-                addFrameBtn.classList.add("disabled");
-                saveFrameBtn.classList.remove("disabled");
-                discardFrameChangesBtn.classList.remove("disabled");
-                this.currentTimelineFrameElem.classList.add('unsaved');
-            } else {
-                addFrameBtn.classList.remove("disabled");
-                saveFrameBtn.classList.add("disabled");
-                discardFrameChangesBtn.classList.add("disabled");
-                this.currentTimelineFrameElem.classList.remove('unsaved');
-            }
-        });
-    }
+		initSaveStateListener() {
+			window.addEventListener('timelineSaveStateChanged', (e) => {
+				if (e.detail.saveState) {
+					addFrameBtn.classList.add("disabled");
+					saveFrameBtn.classList.remove("disabled");
+					discardFrameChangesBtn.classList.remove("disabled");
+					this.currentTimelineFrameElem.classList.add('unsaved');
+				} else {
+					addFrameBtn.classList.remove("disabled");
+					saveFrameBtn.classList.add("disabled");
+					discardFrameChangesBtn.classList.add("disabled");
+					this.currentTimelineFrameElem.classList.remove('unsaved');
+				}
+			});
+		}
 
-    initTransitionListener() {
-        window.addEventListener('beforeFrameTransition', (e) => {
-            this.timelineElem.classList.add('transitioning');
-        });
-        window.addEventListener('afterFrameTransition', (e) => {
-            this.timelineElem.classList.remove('transitioning');
-        });
-    }
-}
+		initTransitionListener() {
+			window.addEventListener('beforeFrameTransition', (e) => {
+				this.timelineElem.classList.add('transitioning');
+			});
+			window.addEventListener('afterFrameTransition', (e) => {
+				this.timelineElem.classList.remove('transitioning');
+			});
+		}
 
-const editor = new Editor();
+		reset(){
+			this.timelineElem.querySelectorAll('.frame').forEach((frameElem) => {
+				frameElem.remove();
+			});
+			this.currentTimelineFrameElem = null;
 
+		}
+	}
 
-// Button declarations
-let addFrameBtn,
-    saveFrameBtn,
-    deleteFrameBtn,
-    discardFrameChangesBtn,
-    timelineFrames,
-    saveTimelineBtn,
-    clearTimelineBtn,
-    playTimelineBtn,
-    helpBtn;
-
-function initButtons() {
-    addFrameBtn = document.getElementById("addFrame");
-    saveFrameBtn = document.getElementById("saveFrame");
-    deleteFrameBtn = document.getElementById("deleteFrame");
-    discardFrameChangesBtn = document.getElementById("discardFrameChanges");
-
-    timelineFrames = document.querySelectorAll(".timeline .frame");
-
-    saveTimelineBtn = document.getElementById("saveTimeline");
-    clearTimelineBtn = document.getElementById("clearTimeline");
-
-    playTimelineBtn = document.getElementById("playTimeline");
-
-    helpBtn = document.getElementById("help");
+	const editor = new Editor();
 
 
-    // Button event listeners
-    addFrameBtn.addEventListener("click", () => {
-        meshGradient.addFrame();
-        if (meshGradient.frames.length > 0) {
-            deleteFrameBtn.classList.remove("disabled");
-        }
-    });
+	// Button declarations
+	let addFrameBtn,
+		saveFrameBtn,
+		deleteFrameBtn,
+		discardFrameChangesBtn,
+		timelineFrames,
+		saveTimelineBtn,
+		loadTimelineBtn,
+		clearTimelineBtn,
+		playTimelineBtn,
+		helpBtn;
 
-    saveFrameBtn.addEventListener("click", () => {
-        meshGradient.saveFrame();
-    });
+	function initButtons() {
+		addFrameBtn = document.getElementById("addFrame");
+		saveFrameBtn = document.getElementById("saveFrame");
+		deleteFrameBtn = document.getElementById("deleteFrame");
+		discardFrameChangesBtn = document.getElementById("discardFrameChanges");
 
-    deleteFrameBtn.addEventListener("click", () => {
-        meshGradient.deleteFrame();
-        if (meshGradient.frames.length > 0) {
-            deleteFrameBtn.classList.remove("disabled");
-        }
-    });
+		timelineFrames = document.querySelectorAll(".timeline .frame");
 
-    discardFrameChangesBtn.addEventListener("click", () => {
-        meshGradient.loadFrame(meshGradient.currentFrame);
-    });
+		saveTimelineBtn = document.getElementById("saveTimeline");
+		loadTimelineBtn = document.getElementById("loadTimeline");
+		clearTimelineBtn = document.getElementById("clearTimeline");
 
-    saveTimelineBtn.addEventListener("click", () => {
-        meshGradient.updateURL();
-    });
+		playTimelineBtn = document.getElementById("playTimeline");
 
-    clearTimelineBtn.addEventListener("click", () => {
-        const check = confirm('Are you sure you want to clear the timeline?');
-        if (!check) return;
-        clearTimelineBtn.classList.add('disabled');
-        meshGradient.clearTimeline();
+		helpBtn = document.getElementById("help");
 
-    });
 
-    playTimelineBtn.addEventListener("click", () => {
-        meshGradient.playTimeline();
-    });
+		// Button event listeners
+		addFrameBtn.addEventListener("click", () => {
+			meshGradient.addFrame();
+			if (meshGradient.frames.length > 0) {
+				deleteFrameBtn.classList.remove("disabled");
+			}
+		});
 
-    helpBtn.addEventListener("click", () => {
+		saveFrameBtn.addEventListener("click", () => {
+			meshGradient.saveFrame();
+		});
 
-    });
-}
+		deleteFrameBtn.addEventListener("click", () => {
+			meshGradient.deleteFrame();
+			if (meshGradient.frames.length > 0) {
+				deleteFrameBtn.classList.remove("disabled");
+			}
+		});
+
+		discardFrameChangesBtn.addEventListener("click", () => {
+			meshGradient.loadFrame(meshGradient.currentFrame);
+		});
+
+		saveTimelineBtn.addEventListener("click", async () => {
+			meshGradient.updateURL();
+			await navigator.clipboard.writeText(btoa(JSON.stringify(meshGradient.getSaveStateData())));
+		});
+		loadTimelineBtn.addEventListener("click", () => {
+			var state = prompt('Enter timeline state');
+			try {
+				var stateJSON = atob(state);
+				var stateObj = JSON.parse(stateJSON);
+			} catch (e) {
+				alert('Invalid timeline state');
+				return;
+			}
+			meshGradient.loadState(stateObj);
+			//meshGradient.loadFrame(0)
+		});
+
+		clearTimelineBtn.addEventListener("click", () => {
+			const check = confirm('Are you sure you want to clear the timeline?');
+			if (!check) return;
+			clearTimelineBtn.classList.add('disabled');
+			meshGradient.clearTimeline();
+
+		});
+
+		playTimelineBtn.addEventListener("click", () => {
+			meshGradient.playTimeline();
+		});
+
+		helpBtn.addEventListener("click", () => {
+
+		});
+	}
 
 	window.addEventListener("load", () => {
 		init();
-    initButtons();
+		initButtons();
 
 	});
 })();
