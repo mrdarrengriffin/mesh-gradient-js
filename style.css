@@ -7,10 +7,15 @@
     --frame-transition-speed: 5s;
 }
 
+
 body {
     background-color: var(--background);
     color: var(--text-color);
     font-family: var(--font-family);
+}
+a{
+    text-decoration: none;
+    color: #ffffff;
 }
 
 #main {
@@ -152,9 +157,6 @@ body {
 }
 .editor .palettes .input canvas{}
 
-.canvas-wrapper {
-    //aspect-ratio: 16/9;
-}
 .canvas-wrapper canvas{
     width: 100%;
     height: 100%;
