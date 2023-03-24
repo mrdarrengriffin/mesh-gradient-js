@@ -35,9 +35,11 @@
                 <div class="separator"></div>
                 <div class="button disabled" id="playTimeline">Play Timeline</div>
                 <div class="separator"></div>
-                <div class="button disabled" id="exportFrame">Export Frame</div>
-                <div class="separator"></div>
-                <div class="button disabled" id="help">Help</div>
+                <div class="button" id="exportFrame">Export Frame</div>
+                <!-- 
+                    <div class="separator"></div>
+                    <div class="button disabled" id="help">Help</div>
+                -->
             </div>
         </div>
         <div class="timeline">
@@ -61,11 +63,17 @@
             </div>
             <div class="palettes">
                 <div class="input">
-                    <canvas width="1920" height="1080" id="canvas1"></canvas>
-                    <canvas width="1920" height="1080" id="canvas2"></canvas>
+                    <div class="canvas-wrapper">
+                        <canvas width="1920" height="1080" id="canvas1"></canvas>
+                    </div>
+                    <div class="canvas-wrapper">
+                        <canvas width="1920" height="1080" id="canvas2"></canvas>
+                    </div>
                 </div>
                 <div class="output">
-                    <canvas width="1920" height="1080" id="canvas3"></canvas>
+                    <div class="canvas-wrapper">
+                        <canvas width="1920" height="1080" id="canvas3"></canvas>
+                    </div>
                 </div>
             </div>
         </div>

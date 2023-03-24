@@ -1380,6 +1380,8 @@
 			const beforeTimelineEvent = new CustomEvent('beforeTimelineTransition', { detail: { saveState: this.hasUnsavedChanges } });
 			window.dispatchEvent(beforeTimelineEvent);
 
+			this.loadFrame(0);
+
 			for (let i = 0; i < this.frames.length; i++) {
 				setTimeout(() => {
 					// at 0ms - first fire start event
@@ -1579,8 +1581,9 @@
 			});
 
 			this.timelineElem.querySelector('.frames').appendChild(frameElem);
+			this.refreshPlayButton();
 		}
-
+		
 		setFrame(frame) {
 			console.log(frame);
 			this.timelineElem.querySelectorAll('.frame').forEach((frameElem) => {
@@ -1592,13 +1595,25 @@
 				}
 			});
 		}
-
+		
 		deleteFrame(frame) {
 			this.timelineElem.querySelectorAll('.frame').forEach((frameElem) => {
 				if (frameElem.getAttribute('data-frame-index') == frame.getPositionIndex()) {
 					frameElem.remove();
 				}
 			});
+			this.refreshPlayButton();
+		}
+		
+		refreshPlayButton(){
+			if(!meshGradient){
+				return;
+			}
+			if(meshGradient.frames.length < 2){
+				playTimelineBtn.classList.add('disabled');
+			}else{
+				playTimelineBtn.classList.remove('disabled');
+			}
 		}
 
 		initSaveStateListener() {
@@ -1664,7 +1679,7 @@
 
 		playTimelineBtn = document.getElementById("playTimeline");
 
-		helpBtn = document.getElementById("help");
+		//helpBtn = document.getElementById("help");
 
 
 		// Button event listeners
@@ -1717,10 +1732,6 @@
 
 		playTimelineBtn.addEventListener("click", () => {
 			meshGradient.playTimeline();
-		});
-
-		helpBtn.addEventListener("click", () => {
-
 		});
 	}
 
